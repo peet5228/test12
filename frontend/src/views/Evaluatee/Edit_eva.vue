@@ -55,6 +55,7 @@ const form = ref({
 const error = ref<Record<string,string>>({})
 const confirmPassword = ref('')
 const newPassword = ref('')
+const token = localStorage.getItem('token')
 const emailReget = /^[^\s]+@[^\s]+\.[^\s]{2,}$/i
 function vaildateForm(){
   error.value = {}
@@ -75,7 +76,7 @@ function vaildateForm(){
 }
 const fetchUser = async () =>{
   try{
-    await axios.get(`${api}/Eva/me`,{headers:{Authorization:`Bearer ${token}`}})
+    const res = await axios.get(`${api}/Eva/me`,{headers:{Authorization:`Bearer ${token}`}})
     form.value = res.data
     confirmPassword.value = ''
     newPassword.value = ''
@@ -89,14 +90,19 @@ const saveMember = async () =>{
   const f = form.value
   const usePassword = newPassword.value.trim() ? newPassword.value.trim() : f.password
   const payload = {
-    id_eva
+    first_name:f.first_name,
+    last_name:f.last_name,
+    email:f.email,
+    username:f.username,
+    password:usePassword,
   }
   try{
-    await axios.put(`${api}/Eva/me`,form.value)
-    alert('สมัครสำเร็จ')
+    await axios.put(`${api}/Eva/me`,payload,{headers:{Authorization:`Bearer ${token}`}})
+    alert('แก้ไขสำเร็จ')
+    localStorage.removeItem('token')
     router.push({path:'/login'})
   }catch(err){
-    console.error('สมัครไม่สำเร็จ',err)
+    console.error('แก้ไขไม่สำเร็จ',err)
   }
 }
 onMounted(fetchUser)
