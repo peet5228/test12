@@ -4,4 +4,4 @@ COPY package*.json ./
 RUN npm install
 COPY . . 
 EXPOSE 7000
-CMD ["npx","nodemon","index.js"] 
+CMD ["npx","nodemon","-L","index.js"] 
