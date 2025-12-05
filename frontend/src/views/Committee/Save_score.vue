@@ -17,12 +17,18 @@
                                         <p>
                                             {{index1+1}}.{{index2+1}} {{name_indicate}} น้ำหนักคะแนน : {{indicate.point_indicate}} คะแนนเต็ม : {{indicate.point_indicate*4}} รายละเอียดตัวชี้วัด : {{indicate.detail_indicate}}
                                         </p>
-                                        <v-select label="ใส่คะแนนประเมิน 1-4" :items="[1,2,3,4]" v-model="indicate.score"></v-select>
+                                        <p class="mt-3">คำอธิบายเพิ่มเติม : {{indicate.detail_eva || '- - -' }} </p>
+                                        <p v-if="indicate.file_eva" class="mt-3">ไฟล์ : <v-btn @click="viewFile(indicate.file_eva)" size="small" color="green">ดูไฟล์</v-btn> </p>
+                                        <p v-else class="mt-3">ไฟล์ : <span class="text-red"><u>ไม่มีไฟล์</u></span></p>
+                                        <v-select label="ใส่คะแนนประเมิน 1-4" :items="[1,2,3,4]" v-model="indicate.score" class="mt-3"></v-select>
                                     </v-col>
                                 </v-row>
                             </v-card>
                         </v-col>
                     </v-row>
+                    <div class="text-center mt-4">
+                        <v-textarea label="ข้อเสนอแนะ(ถ้ามี)" v-model="detail_commit" rows="2"></v-textarea>
+                    </div>
                     <div class="text-center mt-4">
                         <v-btn type="submit" color="blue">บันทึกคะแนน</v-btn>
                     </div>
@@ -39,12 +45,18 @@ import {ref,computed,onMounted} from 'vue'
 import axios from 'axios'
 import {useRouter,useRoute} from 'vue-router'
 import {Commit} from '@/api/api'
+import {api} from '@/api/api'
 const router = useRouter()
 const id_eva = useRoute().params.id_eva
 const topics = ref([])
 const user = ref({})
 const token = localStorage.getItem('token')
 const detail_commit = ref('')
+const viewFile = (filename:string) =>{
+    // const url = `http://localhost:3001/uploads/evadetail/${filename}`
+    const url = new URL(`/uploads/evadetail/${filename}`,api).href
+    window.open(url,'_blank')
+}
 const fetchUser = async () =>{
   try{
     const res = await axios.get(`${Commit}/save_score/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
@@ -64,12 +76,6 @@ const fetchTopic = async () =>{
 onMounted(async () =>{
     await Promise.all([fetchTopic(),fetchUser()])
 })
-const fileMap = ref<Record<string,string>>({})
-const onFileChange = (event:Event,id_topic:number,id_indicate:number) =>{
-    const file = (event.target as HTMLInputElement)?.files?.[0]
-    if(!file)return
-    fileMap.value[`${id_topic}-${id_indicate}`] = file
-}
 const saveScore = async () =>{
     const formData = new FormData()
     const allScore = topics.value.flatMap(topic =>
@@ -78,8 +84,6 @@ const saveScore = async () =>{
                 id_topic:topic.id_topic,
                 id_indicate:i.id_indicate,
                 score:i.score,
-                detail_eva:i.detail_eva,
-                file_key:file ? `file_${key}` : null
             }
         })
     )
