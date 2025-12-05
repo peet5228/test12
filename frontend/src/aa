@@ -12,7 +12,7 @@
 import {ref,computed,onMounted} from 'vue'
 import axios from 'axios'
 import {useRouter,useRoute} from 'vue-router'
-import {api} from '@/api/API'
+import {api} from '@/api/api'
 </script>
 
 <style scoped>
