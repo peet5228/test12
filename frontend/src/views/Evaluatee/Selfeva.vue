@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col cols="12">
-                <v-form @submit.prevent="saveScore">
+                <v-form v-if="user.status_eva === 1" @submit.prevent="saveScore">
                     <h1 class="text-h5 font-weight-bold">แบบประเมินตนเอง</h1>
                     <v-card class="pa-3 mt-2">
                         <p>ชื่อ - นามสกุล : {{user.first_name}} {{user.last_name}} </p>
@@ -18,7 +18,7 @@
                                             {{index1+1}}.{{index2+1}} {{name_indicate}} น้ำหนักคะแนน : {{indicate.point_indicate}} คะแนนเต็ม : {{indicate.point_indicate*4}} รายละเอียดตัวชี้วัด : {{indicate.detail_indicate}}
                                         </p>
                                         <v-textarea label="คำอธิบายเพิ่มเติม(ถ้ามี)" v-model="indicate.detail_eva" rows="2"></v-textarea>
-                                        <v-file-input @change="onFileChange($event,topic.id_topic,indicate.id_indicate)" accept="image/*.pdf" label="ไฟล์"></v-file-input>
+                                        <v-file-input @change="onFileChange($event,topic.id_topic,indicate.id_indicate)" accept="image/*,.pdf" label="ไฟล์"></v-file-input>
                                         <v-select v-if="indicate.check_indicate == 'y'" label="ใส่คะแนนประเมิน 1-4" :items="[1,2,3,4]" v-model="indicate.score"></v-select>
                                         <v-text-field v-else label="ใส่คะแนนประเมิน 1-4" type="number" v-model="indicate.score"></v-text-field>
                                     </v-col>
@@ -26,7 +26,12 @@
                             </v-card>
                         </v-col>
                     </v-row>
+                    <div class="text-center mt-4">
+                        <v-btn type="submit" color="blue">บันทึกคะแนน</v-btn>
+                    </div>
                 </v-form>
+                <v-alert v-if="user.status_eva === 2 || user.status_eva === 4" type="success" >คุณกรอกแบบประเมินแล้ว</v-alert>
+                <v-alert v-else type="warning" >คุณยังไม่มีแบบประเมิน</v-alert>
             </v-col>
         </v-row>
     </v-container>
