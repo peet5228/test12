@@ -14,4 +14,4 @@ app.use(express.json())
 app.use(fileupload())
 app.use('uploads',express.static(path.join('uploads')))
 
-app.listen(7000 , () => console.log('server running on port 7000'))
+app.listen(7000 , () => console.log('server running on port 7000 Been สุดหล่อกำลังออกกำลังหาย!!'))
