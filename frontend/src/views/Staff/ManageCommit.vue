@@ -1,7 +1,7 @@
 <template>
     <v-container fluid class="py-10">
               <v-card class="pa-4">
-                  <h1 class="text-center text-h5 font-weight-bold text-maroon">จัดการผู้รับการประเมินผล</h1>
+                  <h1 class="text-center text-h5 font-weight-bold text-maroon">จัดการกรรมการประเมิน</h1>
                   <v-form @submit.prevent="saveMember">
                     <v-row class="mt-4">
                       <v-col cols="12" md="6">
@@ -20,7 +20,7 @@
                         <v-text-field v-model="form.password" :error-messages="error.password" type="password" label="รหัสผ่าน"></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-select v-model="form.role" :items="['ผู้รับการประเมินผล']" :error-messages="error.role" label="เลือกประเมินสมาชิก"></v-select>
+                        <v-select v-model="form.role" :items="['กรรมการประเมิน']" :error-messages="error.role" label="เลือกประเมินสมาชิก"></v-select>
                       </v-col>
                       <v-col cols="12" md="6" class="text-center">
                         <v-btn class="text-white w-full" color="blue" type="submit">{{ form.id_member ? 'อัปเดต' : 'บันทึก' }}</v-btn>
@@ -103,7 +103,7 @@ const reset = () =>  {
 
 const fetch = async () => {
     try{
-        const res = await axios.get(`${staff}/member/eva`,{headers:{Authorization:`Bearer ${token}`}})
+        const res = await axios.get(`${staff}/member/commit`,{headers:{Authorization:`Bearer ${token}`}})
         r.value = res.data
     }catch(err){
         console.error('Error Fetching',err)
@@ -159,10 +159,14 @@ const edit = (i) => {
 }
 
 const del = async (id_member) => {
-    if(!confirm('ต้องการลบยใช่หรือไม่?')) return
-    await axios.delete(`${staff}/member/${id_member}`,{headers:{Authorization:`Bearer ${token}`}})
-    await fetch() 
-    await reset() 
+    try{
+        if(!confirm('ต้องการลบยใช่หรือไม่?')) return
+        await axios.delete(`${staff}/member/${id_member}`,{headers:{Authorization:`Bearer ${token}`}})
+        await fetch() 
+        await reset() 
+    }catch(err){
+        console.error('Error Delete',err)
+    }
 }
 
 onMounted(fetch)

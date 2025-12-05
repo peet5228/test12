@@ -1,12 +1,13 @@
 const express = require('express')
 const db = require('../../db')
 const router = express.Router()
+const {verifyToken,requireRole} = require('../../middleware/authMiddleware')
 
 // API สำหรับ get ข้อมูล
-router.get('/',async (req,res) => {
+router.get('/',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
     try{
         const [rows] = await db.query(`select * from tb_topic,tb_indicate where tb_topic.id_topic=tb_indicate.id_topic order by id_indicate desc`)
-        if(rows.length === 0) return res.status(403).json({messsage:'ไม่พบข้อมูลจากไอดีนี้'})
+        // if(rows.length === 0) return res.status(403).json({messsage:'ไม่พบข้อมูลจากไอดีนี้'})
         res.json(rows)
     }catch(err){
         console.error('Error get',err)
@@ -15,7 +16,7 @@ router.get('/',async (req,res) => {
 })
 
 // API สำหรับ get ข้อมูล
-router.get('/all',async (req,res) => {
+router.get('/all',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
     try{
         const [rows] = await db.query(`select * from tb_indicate order by id_indicate desc`)
         if(rows.length === 0) return res.status(403).json({messsage:'ไม่พบข้อมูลจากไอดีนี้'})
@@ -27,7 +28,7 @@ router.get('/all',async (req,res) => {
 })
 
 // API สำหรับ insert ข้อมูล
-router.post('/',async (req,res) => {
+router.post('/',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
     try{
         const {id_topic,name_indicate,detail_indicate,point_indicate,check_indicate} = req.body
         const [rows] = await db.query(`insert into tb_indicate (id_topic,name_indicate,detail_indicate,point_indicate,check_indicate) values (?,?,?,?,?)`,[id_topic,name_indicate,detail_indicate,point_indicate,check_indicate])
@@ -39,7 +40,7 @@ router.post('/',async (req,res) => {
 })
 
 // API สำหรับ update ข้อมูล
-router.put('/:id_indicate',async (req,res) => {
+router.put('/:id_indicate',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
     try{
         const {id_indicate} = req.params
         const {id_topic,name_indicate,detail_indicate,point_indicate,check_indicate} = req.body
@@ -52,7 +53,7 @@ router.put('/:id_indicate',async (req,res) => {
 })
 
 // API สำหรับ delete ข้อมูล
-router.delete('/:id_indicate',async (req,res) => {
+router.delete('/:id_indicate',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
     try{
         const {id_indicate} = req.params
         const [rows] = await db.query(`delete from tb_indicate where id_indicate='${id_indicate}'`)

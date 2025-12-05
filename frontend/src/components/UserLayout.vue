@@ -4,20 +4,20 @@
       <v-app-bar-nav-icon @click="drawer = !drawer" variant="text"></v-app-bar-nav-icon>
       <v-toolbar-title>ระบบประเมินบุคลากรวิทยาลัยเทคนิคน่าน</v-toolbar-title>
       <div>ผู้ใช้งาน : {{user.first_name}} {{user.last_name}} <br> {{user.role}} </div>&nbsp;&nbsp;&nbsp;&nbsp;
-      <v-btn @click="logout" class="bg-maroon">อกกจากระบบ</v-btn>
+      <v-btn @click="logout" class="bg-white">อกกจากระบบ</v-btn>
     </v-app-bar>
-    <v-navigation-derawe color="#4A4A4A" v-model="drawer" app :temporary="isMobile" :permanent="!isMobile">
+    <v-navigation-drawer color="#4A4A4A" v-model="drawer" app :temporary="isMobile" :permanent="!isMobile">
       <v-list>
         <v-list-item v-for="item in navitem" :key="item.title" :to="item.to">
           <v-list-item-title> {{item.title}} </v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-navigation-derawe>
-    <v-maint>
+    </v-navigation-drawer>
+    <v-main>
       <v-container fluid>
         <router-view></router-view>
       </v-container>
-    </v-maint>
+    </v-main>
   </v-app>
 </template>
 
@@ -25,7 +25,7 @@
 import {ref,computed,onMounted} from 'vue'
 import axios from 'axios'
 import {useRouter,useRoute} from 'vue-router'
-import {api} from '@/api/API'
+import {api} from '@/api/api'
 import {useDisplay} from 'vuetify'
 const {mdAndDown} = useDisplay()
 const isMobile = computed(() => mdAndDown.value)
@@ -45,12 +45,15 @@ const roles = [
   {title:'จัดการกรรมการประเมิน',to:'/ManageCommit',role:'ฝ่ายบุคลากร'},
   {title:'จัดการหัวข้อการประเมิน',to:'/Topic',role:'ฝ่ายบุคลากร'},
   {title:'จัดการตัวชี้วัด',to:'/Indicate',role:'ฝ่ายบุคลากร'},
+  {title:'จัดการรอบการประเมิน',to:'/Round_eva',role:'ฝ่ายบุคลากร'},
+  {title:'จัดการแบบประเมิน',to:'/Eva',role:'ฝ่ายบุคลากร'},
 
   //commit
   {title:'รายชื่อผู้รับการประเมิน',to:'/Committee',role:'กรรมการประเมิน'},
 
   //eva
   {title:'หน้าหลัก',to:'/Evaluatee',role:'ผู้รับการประเมินผล'},
+  {title:'แก้ไขข้อมูลส่วนตัว',to:'/Edit_eva',role:'ผู้รับการประเมินผล'},
 ]
 const navitem = computed(() =>
   roles.filter((item) => item.role.includes(user.value.role))
