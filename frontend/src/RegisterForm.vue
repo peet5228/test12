@@ -1,0 +1,20 @@
+<template>
+  <v-container>
+    <v-row>
+        <v-col cols="12">
+            <h1 class="text-center text-h5 font-weight-bold text-maroon"></h1>
+        </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script setup lang="ts">
+import {ref,computed,onMounted} from 'vue'
+import axios from 'axios'
+import {useRouter,useRoute} from 'vue-router'
+import {api} from '@/api/API'
+</script>
+
+<style scoped>
+
+</style>

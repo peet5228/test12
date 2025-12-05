@@ -1,0 +1,14 @@
+<template>
+  <v-app></v-app>
+</template>
+
+<script setup lang="ts">
+import {ref,computed,onMounted} from 'vue'
+import axios from 'axios'
+import {useRouter,useRoute} from 'vue-router'
+import {api} from '@/api/API'
+</script>
+
+<style scoped>
+
+</style>
