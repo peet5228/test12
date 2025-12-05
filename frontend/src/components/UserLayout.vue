@@ -13,6 +13,11 @@
         </v-list-item>
       </v-list>
     </v-navigation-derawe>
+    <v-maint>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
+    </v-maint>
   </v-app>
 </template>
 

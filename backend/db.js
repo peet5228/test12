@@ -3,6 +3,7 @@ const pool = mysql.createPool({
     host:'mysql',
     user:'root',
     password:'1234',
+    database:'test12',
     dateStrings:true,
     timezone:'+07:00',
 })
