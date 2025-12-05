@@ -10,6 +10,9 @@ import Check_score from '@/views/Evaluatee/Check_score.vue'
 import Score_eva from '@/views/Evaluatee/Score_eva.vue'
 
 import Committee from '@/views/Committee/index.vue'
+import Detail_eva from '@/views/Committee/Detail_eva.vue'
+import Show_eva from '@/views/Committee/Show_eva.vue'
+import Save_score from '@/views/Committee/Save_score.vue'
 
 // staff
 import index from '@/views/Staff/index.vue'
@@ -18,6 +21,8 @@ import ManageCommit from '@/views/Staff/ManageCommit.vue'
 import Topic from '@/views/Staff/Topic.vue'
 import Indicate from '@/views/Staff/Indicate.vue'
 import Round_eva from '@/views/Staff/Round_eva.vue'
+import Eva from '@/views/Staff/Eva.vue'
+import Eva_commit from '@/views/Staff/Eva_commit.vue'
 
 
 const router = createRouter({
@@ -47,6 +52,21 @@ const router = createRouter({
           path: '/Committee',
           name: 'Committee',
           component: Committee,
+        },
+        {
+          path: '/Detail_eva/:id_eva',
+          name: 'Detail_eva',
+          component: Detail_eva,
+        },
+        {
+          path: '/Show_eva',
+          name: 'Show_eva',
+          component: Show_eva,
+        },
+        {
+          path: '/Save_score/:id_eva',
+          name: 'Save_score',
+          component: Save_score,
         },
       ]
     },
@@ -117,6 +137,16 @@ const router = createRouter({
           path: '/Round_eva',
           name: 'Round_eva',
           component: Round_eva,
+        },
+        {
+          path: '/Eva',
+          name: 'Eva',
+          component: Eva,
+        },
+        {
+          path: '/Eva_commit/:id_eva',
+          name: 'Eva_commit',
+          component: Eva_commit,
         },
       ]
     },

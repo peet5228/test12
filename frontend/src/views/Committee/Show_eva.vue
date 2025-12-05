@@ -11,7 +11,7 @@
                             <th class="border text-center">วันที่ออกแบบประเมิน</th>
                             <th class="border text-center">คะแนนประเมิน</th>
                             <th class="border text-center">สถานะการประเมิน</th>
-                            <th class="border text-center">ตรวจสอบผลการประเมิน</th>
+                            <th class="border text-center">ดำเนินการประเมิน</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,7 +23,7 @@
                             <td class="border text-center">{{ i.total_eva }} คะแนน</td>
                             <td class="border text-center">{{ i.status_eva === 1 ? 'ประเมินตนเอง' : i.status_eva === 2 ? 'รอกรรมการประเมิน' : 'ประเมินสำเร็จ' }}</td>
                             <td class="border text-center">
-                                <v-btn color="blue" size="small" class="text-white" @click="add(i.id_eva)">ตรวจสอบ</v-btn>
+                                <v-btn color="blue" size="small" class="text-white" @click="add(i.id_eva)">ประเมิน</v-btn>
                             </td>
                         </tr>
                         <tr v-if="r.length === 0">
@@ -54,7 +54,7 @@ const fetch = async () => {
     }
 }
 const add = (id_eva) => {
-    router.push({path:`/Detail_eva/${id_eva}`})
+    router.push({path:`/Save_score/${id_eva}`})
 }
 
 onMounted(fetch)
