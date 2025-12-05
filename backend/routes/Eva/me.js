@@ -13,7 +13,7 @@ router.get('/',verifyToken,requireRole('ผู้รับการประเ�
     }
 })
 
-router.pue('/',async (req,res) => {
+router.put('/',verifyToken,requireRole('ผู้รับการประเมินผล'),async (req,res) => {
     try{
         const id_member = req.user.id_member
         const {first_name,last_name,email,username,password} = req.body
