@@ -5,22 +5,16 @@
                   <v-form @submit.prevent="saveMember">
                     <v-row class="mt-4">
                       <v-col cols="12" md="6">
-                        <v-text-field v-model="form.day_open" type="date" label="วันที่เปิดรอบประเมิน" />
+                        <v-text-field v-model="form.day_eva" type="date" label="วันที่ออกแบบประเมิน" />
                       </v-col>
                       <v-col cols="12" md="6">
-                        <v-text-field v-model="form.day_out" type="date" label="วันที่ปิดรอบประเมิน" />
+                        <v-select v-model="form.id_member" :items="member.map(m => ({title:`${m.first_name} ${m.last_name}`,value:m.id_member}))" label="เลือกผู้รับการประเมิน" />
                       </v-col>
                       <v-col cols="12" md="12">
-                        <v-select v-model="form.round_sys" :items="[{title:'รอบที่ 1',value:'1'},{title:'รอบที่ 2',value:'2'}]" label="รอบการประเมิน" />
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-text-field v-model="form.year_sys" type="number" label="ปี" />
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-select v-model="form.status_sys" :items="[{title:'เปิด',value:'y'},{title:'ปิด',value:'n'}]" label="เปิด/ปิด รอบการประเมิน" />
+                        <v-select v-model="form.id_sys" :items="round.map(m => ({title:`รอบที่ ${m.round_sys} ปี ${m.year_sys}`,value:m.id_sys}))" label="เลือกรอบการประเมิน" />
                       </v-col>
                       <v-col cols="12" md="6" class="text-center">
-                        <v-btn class="text-white w-full" color="blue" type="submit">{{ form.id_sys ? 'อัปเดต' : 'บันทึก' }}</v-btn>
+                        <v-btn class="text-white w-full" color="blue" type="submit">{{ form.id_eva ? 'อัปเดต' : 'บันทึก' }}</v-btn>
                       </v-col>
                       <v-col cols="12" md="6" class="text-center">
                         <v-btn class="text-white w-full" color="error" type="reset">ยกเลิก</v-btn>
@@ -34,24 +28,27 @@
                     <thead>
                         <tr class="bg-gray-400">
                             <th class="border text-center">ลำดับ</th>
-                            <th class="border text-center">วันที่เปิดรอบประเมิน</th>
-                            <th class="border text-center">วันที่ปิดรอบประเมิน</th>
+                            <th class="border text-center">ผู้รับการประเมินผล</th>
                             <th class="border text-center">รอบการประเมิน</th>
-                            <th class="border text-center">สถานะ เปิด/ปิด รอบการประเมิน</th>
+                            <th class="border text-center">วันที่ออกแบบประเมิน</th>
+                            <th class="border text-center">สถานะการประเมิน</th>
                             <th class="border text-center">จัดการ</th>
+                            <th class="border text-center">เพิ่มกรรมการ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(i,index) in  r" :keys="i.id_sys">
+                        <tr v-for="(i,index) in  r" :keys="i.id_eva">
                             <td class="border text-center">{{ index+1 }}</td>
-                            <td class="border text-center">{{ i.day_open }}</td>
-                            <td class="border text-center">{{ i.day_out }}</td>
+                            <td class="border text-center">{{ i.first_name }} {{ i.last_name }}</td>
                             <td class="border text-center">รอบที่ {{ i.round_sys }} ปี {{ i.year_sys }}</td>
-                            
-                            <td class="border text-center">{{ i.status_sys === 'y' ? 'เปิด' : 'ปิด' }}</td>
+                            <td class="border text-center">{{ i.day_eva }}</td>
+                            <td class="border text-center">{{ i.status_eva === 1 ? 'ประเมินตนเอง' : i.status_eva === 2 ? 'กรรมการประเมิน' : 'ประเมินสำเร็จ' }}</td>
                             <td class="border text-center">
                                 <v-btn color="warning" size="small" class="text-white" @click="edit(i)">แก้ไข</v-btn>&nbsp;
-                                <v-btn color="error" size="small" class="text-white" @click="del(i.id_sys)">ลบ</v-btn>
+                                <v-btn color="error" size="small" class="text-white" @click="del(i.id_eva)">ลบ</v-btn>
+                            </td>
+                            <td class="border text-center">
+                                <v-btn color="success" size="small" class="text-white" @click="add(i.id_eva)">เพิ่มกรรมการ</v-btn>
                             </td>
                         </tr>
                         <tr v-if="r.length === 0">
@@ -74,31 +71,32 @@ const token = localStorage.getItem('token')
 const router = useRouter()
 
 const r = ref([])
-const topic = ref([])
+const member = ref([])
+const round = ref([])
 
 const form = ref({
-    id_sys:null,
-    day_open:null,
-    day_out:'',
-    round_sys:'',
-    year_sys:'',
-    status_sys:'',
+    id_eva:null,
+    id_member:null,
+    id_sys:'',
+    day_eva:'',
 })
 
 const reset = () =>  {
     form.value = {
-        id_sys:null,
-        day_open:null,
-        day_out:'',
-        round_sys:'',
-        year_sys:'',
-        status_sys:'',
+           id_eva:null,
+    id_member:null,
+    id_sys:'',
+    day_eva:'',
     }
 }
 
 const fetch = async () => {
     try{
-        const res = await axios.get(`${staff}/round_eva`,{headers:{Authorization:`Bearer ${token}`}})
+        const s = await axios.get(`${staff}/member/eva`,{headers:{Authorization:`Bearer ${token}`}})
+        member.value = s.data
+        const e = await axios.get(`${staff}/eva/round`,{headers:{Authorization:`Bearer ${token}`}})
+        round.value = e.data
+        const res = await axios.get(`${staff}/eva/eva`,{headers:{Authorization:`Bearer ${token}`}})
         r.value = res.data
     }catch(err){
         console.error('Error Fetching',err)
@@ -108,10 +106,10 @@ const fetch = async () => {
 
 const saveMember = async () =>{
   try{
-    if(form.value.id_sys){
-        await axios.put(`${staff}/round_eva/${form.value.id_sys}`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+    if(form.value.id_eva){
+        await axios.put(`${staff}/eva/${form.value.id_eva}`,form.value,{headers:{Authorization:`Bearer ${token}`}})
     }else{
-        await axios.post(`${staff}/round_eva`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+        await axios.post(`${staff}/eva`,form.value,{headers:{Authorization:`Bearer ${token}`}})
     }
     alert('ทำรายการสำเร็จ')
     await fetch()
@@ -125,15 +123,19 @@ const edit = (i) => {
     form.value = {...i}
 }
 
-const del = async (id_sys) => {
+const del = async (id_eva) => {
     try{
         if(!confirm('ต้องการลบใช่หรือไม่?')) return
-        await axios.delete(`${staff}/round_eva/${id_sys}`,{headers:{Authorization:`Bearer ${token}`}})
+        await axios.delete(`${staff}/eva/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
         await fetch() 
         await reset() 
     }catch(err){
         console.error('Error Delete',err)
     }
+}
+
+const add = (id_eva) => {
+    router.push({path:`Eva_commit/${id_eva}`})
 }
 
 onMounted(fetch)
