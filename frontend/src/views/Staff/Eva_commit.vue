@@ -37,7 +37,7 @@
                     <tbody>
                         <tr v-for="(i,index) in  List" :keys="i.id_commit">
                             <td class="border text-center">{{ index+1 }}</td>
-                            <td class="border text-center">{{ i.id_member }}</td>
+                            <td class="border text-center">{{ nameOf(i.id_member) }}</td>
                             <td class="border text-center">{{ i.role }}</td>
                             <td class="border text-center">
                                 <v-btn color="error" size="small" class="text-white" @click="del(i.id_commit)">ลบ</v-btn>
@@ -96,7 +96,7 @@ const fetch = async () => {
 }
 
 const nameMap = computed( () => Object.fromEntries(people.value.map(p => [p.id_member,p.fullname_commit])) )
-const nameOf = (id) => nameMap.value[0]
+const nameOf = (id) => nameMap.value[id]
 
 const MEMBER = (idx) => {
     const picked = List.value.map( (c,i) => (i !== idx ? c.id_member : null) )

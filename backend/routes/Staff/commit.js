@@ -33,7 +33,7 @@ router.get('/:id_eva',verifyToken,requireRole('ฝ่ายบุคลากร
     try{
         const {id_eva} = req.params
         const [before] = await db.query(`select id_member,concat(first_name,' ',last_name)as fullname_commit from tb_member where role='กรรมการประเมิน' order by id_member desc`)
-        const [after] = await db.query(`select id_commit,first_name,last_name,level_commit as role,tb_member.id_member from tb_member,tb_eva,tb_commit where tb_commit.id_eva='${id_eva}' and tb_eva.id_eva=tb_commit.id_commit and tb_eva.id_member=tb_member.id_member`)
+        const [after] = await db.query(`select id_commit,first_name,last_name,level_commit as role,tb_member.id_member from tb_member,tb_eva,tb_commit where tb_commit.id_eva='${id_eva}' and tb_eva.id_eva=tb_commit.id_eva and tb_commit.id_member=tb_member.id_member`)
         res.json({before,after})
     }catch(err){
         console.error('Error get',err)
@@ -48,7 +48,7 @@ router.post('/:id_eva',verifyToken,requireRole('ฝ่ายบุคลาก�
         await db.query(`delete from tb_commit where id_eva='${id_eva}'`)
         const commit = req.body
         const values = commit.map( p => [p.id_member,id_eva,p.role,'n'] )
-        await db.query(`insert into tb_commit (id_member,id_eva,level_commit) values ?`,[values])
+        await db.query(`insert into tb_commit (id_member,id_eva,level_commit,status_commit) values ?`,[values])
         res.json({message:'Insert Committees Success'})
     }catch(err){
         console.error('Error Insert',err)
