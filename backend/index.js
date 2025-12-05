@@ -17,5 +17,8 @@ app.use('uploads',express.static(path.join('uploads')))
 const auth = require('./routes/auth')
 app.use('/api/auth',auth)
 
+const profile = require('./routes/profile')
+app.use('/api/profile',profile)
+
 app.listen(7000 , () => console.log('server running on port 7000'))
 
