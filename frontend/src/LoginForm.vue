@@ -50,7 +50,7 @@ const Login = async () => {
         }else if(useRole === 'กรรมการประเมิน'){
             router.push('/Committee')
         }else if(useRole === 'ผู้รับการประเมินผล'){
-            router.push('/Evalutee')
+            router.push('/Evaluatee')
         }
     }catch(err){
         console.error('Error Login',err)
